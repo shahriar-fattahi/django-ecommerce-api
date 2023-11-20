@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import UserManager
 import datetime
 from pytz import timezone
-from ..src.settings import TIME_ZONE
+from django.conf import settings
 
 class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
@@ -62,7 +62,7 @@ class VerificationCode(models.Model):
 
     @property
     def is_valid(self):
-        now = datetime.datetime.now(timezone(TIME_ZONE))
+        now = datetime.datetime.now(timezone(settings.TIME_ZONE))
         if now - self.start > 180: return False
         return True
     def __str__(self):
