@@ -2,16 +2,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from .models import *
 
-#validators:
-def clean_phone(value):
-    
-    return value
-
-def clean_password_confirm(value):
-    pass
-
-
-#serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
