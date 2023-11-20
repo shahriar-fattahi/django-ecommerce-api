@@ -49,13 +49,22 @@ class UserRegisterSerializer(serializers.Serializer):
         #passwords validator
         pass1 = attrs.get('password')
         pass2 = attrs.get('password_confirm')
-        print('-------------------------------------------------------------',pass1, pass2)
         if pass1 and pass2 and pass1 != pass2:
             raise serializers.ValidationError('passwords must be matche')
         print(attrs)
         return attrs
     
-    
+
+class PhoneSerializer(serializers.Serializer):
+    phone = serializers.CharField(required=True)
+    def validate_phone(self, value):
+        if value == "" :
+            raise serializers.ValidationError('Phone must be entered')
+        elif not value.startswith("09") or len(value)<11:
+            raise serializers.ValidationError('The phone number entered is incorrect')
+        elif not User.objects.filter(phone=value).exists():
+            raise serializers.ValidationError('The phone number entered does not exist')
+        return value
 
 class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:

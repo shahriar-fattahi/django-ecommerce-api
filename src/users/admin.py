@@ -36,8 +36,12 @@ admin.site.register(User, UserAdmin)
 
  
 @admin.register(UserAddress)
-class VerifyCodeAdmin(admin.ModelAdmin):
+class UserAddressAdmin(admin.ModelAdmin):
 	list_display = ('owner', 'country', 'province', 'city')
+      
+@admin.register(VerificationCode)
+class VerificationCodeAdmin(admin.ModelAdmin):
+	list_display = ('phone', 'start')
 	
 
 

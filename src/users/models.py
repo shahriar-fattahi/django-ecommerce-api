@@ -56,16 +56,18 @@ class UserAddress(models.Model):
         return f'{self.country} - {self.province} - {self.city}'
     
 class VerificationCode(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=11)
     code = models.CharField(max_length=6)
     start = models.DateTimeField(auto_now_add=True)
-
+    @property
+    def validity_time(self):
+        now = datetime.datetime.now(timezone(settings.TIME_ZONE))
+        return int(180 - (now - self.start).total_seconds())
     @property
     def is_valid(self):
-        now = datetime.datetime.now(timezone(settings.TIME_ZONE))
-        if now - self.start > 180: return False
+        if self.validity_time <= 0: return False
         return True
     def __str__(self):
-        return self.user.email
+        return self.phone
     
     

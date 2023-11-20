@@ -5,7 +5,7 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from .utils import account_activation_token
 
-class RegisterApi(views.APIView):
+class RegisterApiView(views.APIView):
     """
     Register new users using phone number, email and password.
     """
@@ -34,5 +34,19 @@ class ActivateUserApiView(views.APIView):
             user.save()
             return response.Response({'message': 'Your account is activated'})
         return response.Response({'message': 'Invalid link'}, status.HTTP_404_NOT_FOUND)
+
+class SendSMSAPIView(views.APIView):
+    """
+    Check if submitted phone number is a valid phone number and send OTP.
+    """
+    def post(self, request):
+        serializer = PhoneSerializer(data=request.POST)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        verificationCode=tasks.send_verification_code_by_phone(data['phone'])
+        return response.Response(
+            {'message': 'We sent a Code to your phone number', 'time':f'{verificationCode.validity_time}'},
+            status=status.HTTP_200_OK
+            )
         
         
