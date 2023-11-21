@@ -74,6 +74,21 @@ class SendSMSAPIView(views.APIView):
             status=status.HTTP_200_OK
             )
 
+class ValidateSMSCodeApiView(views.APIView):
+    """
+    Login with verification code
+    """
+    def post(self, request):
+        serializer = ValidationCodeSerializer(data=request.POST)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        user = User.objects.get(phone=data['phone'])
+        token = utils.creat_token(user_id=user.id)
+        resp = response.Response()
+        resp.set_cookie(key="jwt", value=token, httponly=True)
+        resp.data = {'message': 'Successfully Logged In'}
+        return resp
+
 class LogoutApiViwe(views.APIView):
     authentication_classes = (authentication.CustomUserAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)

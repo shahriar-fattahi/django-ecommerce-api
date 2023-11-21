@@ -52,7 +52,6 @@ class UserRegisterSerializer(serializers.Serializer):
         pass2 = attrs.get('password_confirm')
         if pass1 and pass2 and pass1 != pass2:
             raise serializers.ValidationError('passwords must be matche')
-        print(attrs)
         return attrs
     
 class UserLoginSerializer(serializers.Serializer):
@@ -69,6 +68,24 @@ class PhoneSerializer(serializers.Serializer):
         elif not User.objects.filter(phone=value).exists():
             raise serializers.ValidationError('The phone number entered does not exist')
         return value
+
+class ValidationCodeSerializer(serializers.Serializer):
+    code = serializers.CharField(required=True)
+    phone = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if not User.objects.filter(phone=attrs['phone']).exists():
+            raise serializers.ValidationError('The number entered is not registered')
+        
+        try:
+            inc = VerificationCode.objects.get(phone=attrs['phone'])
+        except (VerificationCode.DoesNotExist):
+            raise serializers.ValidationError('You must first receive a verification code')
+        if not inc.is_valid:
+            raise serializers.ValidationError('Your verification code has expired')
+        if inc.code != attrs['code']:
+            raise serializers.ValidationError('The verification code entered is invalid')
+        return attrs
 
 
 class UserAddressSerializer(serializers.ModelSerializer):

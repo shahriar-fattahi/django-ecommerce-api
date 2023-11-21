@@ -41,7 +41,7 @@ class UserAddressAdmin(admin.ModelAdmin):
       
 @admin.register(VerificationCode)
 class VerificationCodeAdmin(admin.ModelAdmin):
-	list_display = ('phone', 'start')
+	list_display = ('phone', 'code', 'start')
 	
 
 
