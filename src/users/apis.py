@@ -4,6 +4,7 @@ from . import tasks
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from . import utils
+from . import authentication
 
 class RegisterApiView(views.APIView):
     """
@@ -71,4 +72,15 @@ class SendSMSAPIView(views.APIView):
             status=status.HTTP_200_OK
             )
         
+class UserDetasilsApiView(views.APIView):
+    """
+    Get user details. This endpoint can only be used if user is authenticated 
+    """
+    authentication_classes = (authentication.CustomUserAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self,request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return response.Response(data=serializer.data)
         
