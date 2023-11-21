@@ -13,7 +13,7 @@ class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
 account_activation_token = AccountActivationTokenGenerator()
 
 
-def creat_token(user_id) ->str:
+def creat_jwt_token(user_id) ->str:
     payload = dict(
         id = user_id,
         exp = datetime.datetime.now(timezone(settings.TIME_ZONE)) + datetime.timedelta(hours=24),

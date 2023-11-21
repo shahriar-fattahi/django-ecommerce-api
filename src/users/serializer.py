@@ -76,7 +76,8 @@ class ValidationCodeSerializer(serializers.Serializer):
     def validate(self, attrs):
         if not User.objects.filter(phone=attrs['phone']).exists():
             raise serializers.ValidationError('The number entered is not registered')
-        
+        if not User.objects.get(phone=attrs['phone']).is_active:
+            raise serializers.ValidationError('Your account has not been activated')
         try:
             inc = VerificationCode.objects.get(phone=attrs['phone'])
         except (VerificationCode.DoesNotExist):

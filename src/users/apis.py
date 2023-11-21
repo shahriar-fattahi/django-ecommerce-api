@@ -53,6 +53,9 @@ class LoginApiView(views.APIView):
         if not user.check_password(data['password']):
             raise exceptions.AuthenticationFailed('Invalid Credentilas')
         
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed('Your account has not been activated')
+        
         token = utils.creat_token(user_id=user.id)
 
         resp = response.Response()
