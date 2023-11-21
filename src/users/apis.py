@@ -3,7 +3,7 @@ from .serializer import *
 from . import tasks
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
-from .utils import account_activation_token
+from . import utils
 
 class RegisterApiView(views.APIView):
     """
@@ -18,8 +18,30 @@ class RegisterApiView(views.APIView):
             phone=data['phone'],
             password=data['password_confirm'],
         )
-        tasks.send_activation_link_by_email(request, user, data['email'])
+        #tasks.send_activation_link_by_email(request, user, data['email'])
         return response.Response({'message': 'Check your email to activate your account'}, status.HTTP_201_CREATED)
+
+class LoginApiView(views.APIView):
+    """
+    Login user using email and password - JWT authenication
+    """
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.POST)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        try:
+            user = User.objects.get(email=data['email'])
+        except (User.DoesNotExist):
+            raise exceptions.AuthenticationFailed('Invalid Credentilas')
+        
+        if not user.check_password(data['password']):
+            raise exceptions.AuthenticationFailed('Invalid Credentilas')
+        
+        token = utils.creat_token(user_id=user.id)
+
+        resp = response.Response()
+        resp.set_cookie(key="jwt", value=token, httponly=True)
+        return resp
 
 class ActivateUserApiView(views.APIView):
     def get(self, request, uidb64, token):
@@ -29,7 +51,7 @@ class ActivateUserApiView(views.APIView):
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
 
-        if user is not None and account_activation_token.check_token(user, token):
+        if user is not None and utils.account_activation_token.check_token(user, token):
             user.is_active = True
             user.save()
             return response.Response({'message': 'Your account is activated'})

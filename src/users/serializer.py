@@ -44,6 +44,9 @@ class UserRegisterSerializer(serializers.Serializer):
         print(attrs)
         return attrs
     
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
 class PhoneSerializer(serializers.Serializer):
     phone = serializers.CharField(required=True)
