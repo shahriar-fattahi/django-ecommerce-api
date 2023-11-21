@@ -5,7 +5,18 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ('email', 'phone', 'first_name', 'last_name', 'profile_picture', 'email_verified', 'is_active')
+    def update(self, instance, validated_data):
+        """
+        Update and return an existing `Snippet` instance, given the validated data.
+        """
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.profile_picture = validated_data.get('profile_picture', instance.profile_picture)
+        instance.save()
+        return instance
 
 class UserRegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True,validators=[UniqueValidator(queryset=User.objects.all())])
@@ -58,6 +69,7 @@ class PhoneSerializer(serializers.Serializer):
         elif not User.objects.filter(phone=value).exists():
             raise serializers.ValidationError('The phone number entered does not exist')
         return value
+
 
 class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:
