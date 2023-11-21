@@ -58,7 +58,7 @@ class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True, write_only=True)
 
-class PhoneSerializer(serializers.Serializer):
+class SendCodeSerializer(serializers.Serializer):
     phone = serializers.CharField(required=True)
     def validate_phone(self, value):
         if value == "" :
@@ -67,6 +67,8 @@ class PhoneSerializer(serializers.Serializer):
             raise serializers.ValidationError('The phone number entered is incorrect')
         elif not User.objects.filter(phone=value).exists():
             raise serializers.ValidationError('The phone number entered does not exist')
+        elif not User.objects.get(phone=value).is_active:
+            raise serializers.ValidationError('Your account has not been activated')
         return value
 
 class ValidationCodeSerializer(serializers.Serializer):

@@ -56,7 +56,7 @@ class LoginApiView(views.APIView):
         if not user.is_active:
             raise exceptions.AuthenticationFailed('Your account has not been activated')
         
-        token = utils.creat_token(user_id=user.id)
+        token = utils.creat_jwt_token(user_id=user.id)
 
         resp = response.Response()
         resp.set_cookie(key="jwt", value=token, httponly=True)
@@ -68,7 +68,7 @@ class SendSMSAPIView(views.APIView):
     Check if submitted phone number is a valid phone number and send OTP.
     """
     def post(self, request):
-        serializer = PhoneSerializer(data=request.POST)
+        serializer = SendCodeSerializer(data=request.POST)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         verificationCode=tasks.send_verification_code_by_phone(data['phone'])
@@ -86,7 +86,7 @@ class ValidateSMSCodeApiView(views.APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         user = User.objects.get(phone=data['phone'])
-        token = utils.creat_token(user_id=user.id)
+        token = utils.creat_jwt_token(user_id=user.id)
         resp = response.Response()
         resp.set_cookie(key="jwt", value=token, httponly=True)
         resp.data = {'message': 'Successfully Logged In'}
