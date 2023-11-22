@@ -12,9 +12,7 @@ class Category(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(allow_unicode=True, unique=True)
     is_subcategory = models.BooleanField(default=False)
-    subcategory = models.ForeignKey(
-        "self", on_delete=models.CASCADE, blank=True, null=True
-    )
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name

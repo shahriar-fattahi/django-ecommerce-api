@@ -2,7 +2,7 @@ from rest_framework import views, response, exceptions, permissions, status, gen
 from .serializer import *
 from . import tasks
 from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode
 from . import utils
 from . import authentication
 

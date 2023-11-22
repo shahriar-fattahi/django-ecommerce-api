@@ -1,12 +1,25 @@
 from rest_framework import serializers
 from . import models
-from users import serializer as UsersSerializer
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class ParentCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Category
-        fields = "__all__"
+        fields = ("name",)
+
+
+class CategoryReadOnlySerializer(serializers.ModelSerializer):
+    parent = ParentCategorySerializer()
+
+    class Meta:
+        model = models.Category
+        exclude = ("modified_date",)
+
+    def get_fields(self):
+        fields = super().get_fields()
+        for field in fields.values():
+            field.read_only = True
+        return fields
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -55,7 +68,7 @@ class ProductReadOnlySerializer(serializers.ModelSerializer):
     def get_categories(self, obj):
         data = []
         for _category in obj.categories.all():
-            category = CategorySerializer(_category)
+            category = CategoryReadOnlySerializer(_category)
             data.append(category.data)
         return data
 

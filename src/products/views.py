@@ -34,3 +34,13 @@ class ProductViewSet(viewsets.ModelViewSet):
         if product.exists():
             product.update(views=F("views") + 1)
         return super().retrieve(request, *args, **kwargs)
+
+
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    List and Retrieve product categories
+    """
+
+    queryset = models.Category.objects.all()
+    serializer_class = serializers.CategoryReadOnlySerializer
+    permission_classes = (permissions.AllowAny,)
