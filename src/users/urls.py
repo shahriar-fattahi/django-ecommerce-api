@@ -1,7 +1,11 @@
 from django.urls import path, include
 from . import views
+from rest_framework.routers import DefaultRouter
 
 app_name = "users"
+
+router = DefaultRouter()
+router.register(r"", views.AddressViewSet)
 
 urlpatterns = [
     path("register/", views.RegisterApiView.as_view(), name="register"),
@@ -25,4 +29,5 @@ urlpatterns = [
         name="change-user-information",
     ),
     path("delete_account/", views.DeleteUserApiView.as_view(), name="delete-user"),
+    path("addresses", include(router.urls)),
 ]

@@ -1,10 +1,19 @@
-from rest_framework import views, response, exceptions, permissions, status, generics
+from rest_framework import (
+    views,
+    response,
+    exceptions,
+    permissions,
+    status,
+    generics,
+    viewsets,
+)
 from .serializer import *
 from . import tasks
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from . import utils
 from . import authentication
+from .permissions import IsAdminOrOwner
 
 
 class RegisterApiView(views.APIView):
@@ -165,3 +174,22 @@ class DeleteUserApiView(generics.DestroyAPIView):
         resp.data = {"message": "Your Account Successfully Deleted"}
         resp.status_code = status.HTTP_204_NO_CONTENT
         return resp
+
+
+class AddressViewSet(viewsets.ModelViewSet):
+    """
+    CRUD addresses
+    """
+
+    authentication_classes = (authentication,)
+    queryset = UserAddress.objects.all()
+
+    def get_permissions(self):
+        if self.action in ("create",):
+            self.permission_classes = (permissions.IsAuthenticated,)
+        elif self.action in ("update", "partial_update", "destroy"):
+            self.permission_classes = (IsAdminOrOwner,)
+        else:
+            self.permission_classes = (permissions.AllowAny,)
+
+        return super().get_permissions()
