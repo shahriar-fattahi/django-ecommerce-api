@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 
 class Category(models.Model):
@@ -29,6 +30,7 @@ class Product(models.Model):
         ("Color", "color"),
         ("Both", "both"),
     )
+    serller = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -41,6 +43,7 @@ class Product(models.Model):
     category = models.ManyToManyField(Category)
     color = models.ManyToManyField("Color", blank=True)
     size = models.ManyToManyField("Size", blank=True)
+    views = models.PositiveIntegerField(default=0)
 
     @property
     def final_price(self):
