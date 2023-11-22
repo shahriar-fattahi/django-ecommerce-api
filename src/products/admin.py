@@ -15,7 +15,7 @@ class ProductGalleryInlines(admin.TabularInline):
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "unit_price", "discount", "available", "status")
-    raw_id_fields = ("category", "color", "size")
+    raw_id_fields = ("categories", "colors", "sizes")
     inlines = (ProductGalleryInlines,)
 
 

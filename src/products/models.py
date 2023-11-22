@@ -4,7 +4,7 @@ from users.models import User
 
 class Category(models.Model):
     class Meta:
-        ordering = ("-id",)
+        ordering = ("id",)
         verbose_name_plural = "Categories"
 
     name = models.CharField(max_length=100)
@@ -30,7 +30,7 @@ class Product(models.Model):
         ("Color", "color"),
         ("Both", "both"),
     )
-    serller = models.ForeignKey(User, on_delete=models.CASCADE)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -40,9 +40,9 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=VARIANT)
     brand = models.ForeignKey("Brand", on_delete=models.CASCADE)
-    category = models.ManyToManyField(Category)
-    color = models.ManyToManyField("Color", blank=True)
-    size = models.ManyToManyField("Size", blank=True)
+    categories = models.ManyToManyField(Category)
+    colors = models.ManyToManyField("Color", blank=True)
+    sizes = models.ManyToManyField("Size", blank=True)
     views = models.PositiveIntegerField(default=0)
 
     @property

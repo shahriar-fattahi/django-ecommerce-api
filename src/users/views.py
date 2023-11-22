@@ -156,3 +156,12 @@ class DeleteUserApiView(generics.DestroyAPIView):
 
     def get_object(self):
         return self.request.user
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        resp = response.Response()
+        resp.delete_cookie("jwt")
+        resp.data = {"message": "Your Account Successfully Deleted"}
+        resp.status_code = status.HTTP_204_NO_CONTENT
+        return resp
