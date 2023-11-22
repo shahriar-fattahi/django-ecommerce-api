@@ -3,7 +3,8 @@ from django.db import models
 
 class Category(models.Model):
     class Meta:
-        orderinf = "-id"
+        ordering = ("-id",)
+        verbose_name_plural = "Categories"
 
     name = models.CharField(max_length=100)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -20,7 +21,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     class Meta:
-        ordering = ["-id"]
+        ordering = ("-id",)
 
     VARIANT = (
         ("None", "none"),
@@ -37,8 +38,9 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=VARIANT)
     brand = models.ForeignKey("Brand", on_delete=models.CASCADE)
-    color = models.ForeignKey("Color", on_delete=models.CASCADE, blank=True, null=True)
-    size = models.ForeignKey("Size", on_delete=models.CASCADE, blank=True, null=True)
+    category = models.ManyToManyField(Category)
+    color = models.ManyToManyField("Color", blank=True)
+    size = models.ManyToManyField("Size", blank=True)
 
     @property
     def final_price(self):
@@ -46,6 +48,9 @@ class Product(models.Model):
 
 
 class ProductGallery(models.Model):
+    class Meta:
+        verbose_name_plural = "Product Galleries"
+
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="images"
     )
