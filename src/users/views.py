@@ -181,15 +181,20 @@ class AddressViewSet(viewsets.ModelViewSet):
     CRUD addresses
     """
 
-    authentication_classes = (authentication,)
+    authentication_classes = (authentication.CustomUserAuthentication,)
+    serializer_class = UserAddressSerializer
     queryset = UserAddress.objects.all()
+
+    def get_queryset(self):
+        if self.request.user.is_admin:
+            return UserAddress.objects.all()
+        else:
+            return UserAddress.objects.filter(owner_id=self.request.user.id)
 
     def get_permissions(self):
         if self.action in ("create",):
             self.permission_classes = (permissions.IsAuthenticated,)
-        elif self.action in ("update", "partial_update", "destroy"):
-            self.permission_classes = (IsAdminOrOwner,)
         else:
-            self.permission_classes = (permissions.AllowAny,)
+            self.permission_classes = (IsAdminOrOwner,)
 
         return super().get_permissions()

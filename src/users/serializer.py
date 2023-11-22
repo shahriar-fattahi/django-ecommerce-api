@@ -127,12 +127,17 @@ class ValidationCodeSerializer(serializers.Serializer):
 
 
 class UserAddressSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = UserAddress
-        fiels = "__all__"
+        fields = "__all__"
 
-    def create(self, validated_data):
-        obj = self.Meta.model.objects.create(
-            owner=serializers.CurrentUserDefault(), **validated_data
-        )
-        return obj
+    # def create(self, validated_data):
+    #     print(
+    #         serializers.CurrentUserDefault().__dir__,
+    #         "       ---------------------------",
+    #     )
+    #     owner = User.objects.get(id=1)
+    #     obj = self.Meta.model.objects.create(owner=owner, **validated_data)
+    #     return obj
