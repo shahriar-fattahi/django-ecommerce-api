@@ -35,6 +35,7 @@ class Product(models.Model):
     unit_price = models.PositiveIntegerField()
     discount = models.PositiveIntegerField(default=0)
     available = models.BooleanField(default=True)
+    quantity = models.PositiveIntegerField(default=50)
     description = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=VARIANT)
     brand = models.ForeignKey("Brand", on_delete=models.CASCADE)

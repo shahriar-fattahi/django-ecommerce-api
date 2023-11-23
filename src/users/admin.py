@@ -49,7 +49,7 @@ admin.site.register(User, UserAdmin)
 
 @admin.register(UserAddress)
 class UserAddressAdmin(admin.ModelAdmin):
-    list_display = ("owner", "country", "province", "city")
+    list_display = ("owner", "country", "province", "city", "id")
 
 
 @admin.register(VerificationCode)

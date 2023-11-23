@@ -187,9 +187,8 @@ class AddressViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_admin:
-            return UserAddress.objects.all()
-        else:
-            return UserAddress.objects.filter(owner_id=self.request.user.id)
+            return self.queryset
+        return self.queryset.filter(owner_id=self.request.user.id)
 
     def get_permissions(self):
         if self.action in ("create",):

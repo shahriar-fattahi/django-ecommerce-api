@@ -133,11 +133,6 @@ class UserAddressSerializer(serializers.ModelSerializer):
         model = UserAddress
         fields = "__all__"
 
-    # def create(self, validated_data):
-    #     print(
-    #         serializers.CurrentUserDefault().__dir__,
-    #         "       ---------------------------",
-    #     )
-    #     owner = User.objects.get(id=1)
-    #     obj = self.Meta.model.objects.create(owner=owner, **validated_data)
-    #     return obj
+    def update(self, instance, validated_data):
+        validated_data.pop("owner")
+        return super().update(instance, validated_data)
