@@ -1,4 +1,4 @@
-from rest_framework import views, permissions, response
+from rest_framework import views, generics, permissions, response
 from .permissions import IsCheckOut
 from orders.models import Order
 from . import models
@@ -6,6 +6,7 @@ from users import authentication
 import requests
 import json
 from django.conf import settings
+from . import serializers
 
 ZP_API_REQUEST = "https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
 ZP_API_VERIFY = "https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
@@ -122,3 +123,15 @@ class PaymentVerifyView(views.APIView):
             return response.Response(
                 {"message": "Transaction failed or canceled by user"}
             )
+
+
+class TransactionsView(generics.ListAPIView):
+    authentication_classes = (authentication.CustomUserAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = models.Checkout.objects.all()
+    serializer_class = serializers.TransactionsReadSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_admin:
+            return self.queryset
+        return self.queryset.filter(user_id=self.request.user.id)

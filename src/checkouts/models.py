@@ -25,7 +25,9 @@ class Payment(models.Model):
     SUCCESS = "s"
     PAYMENT_STATUS_CHOICES = ((FAILED, "failed"), (SUCCESS, "success"))
 
-    checkout = models.ForeignKey(Checkout, on_delete=models.CASCADE)
+    checkout = models.ForeignKey(
+        Checkout, on_delete=models.CASCADE, related_name="payments"
+    )
     payment_method = models.CharField(max_length=1, choices=PAYMENT_METHOD_CHOICES)
     transaction_id = models.CharField(
         max_length=10,
