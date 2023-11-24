@@ -30,9 +30,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
                 return item
         return self.Meta.model.objects.create(order=order, **validated_data)
 
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
-
 
 class OrderReadOnlySerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()
@@ -62,7 +59,7 @@ class OrderWriteOnlySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Order
-        exclude = ("created", "updated", "discount")
+        exclude = ("created", "updated", "discount", "paid")
 
     def validate(self, attrs):
         code = attrs.get("coupon")

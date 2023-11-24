@@ -10,6 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 JWT_SECRET = os.environ.get("JWT_SECRET")
+MERCHANT = os.environ.get("MERCHANT")
 
 
 DEBUG = True
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "products.apps.ProductsConfig",
     "orders.apps.OrdersConfig",
+    "checkouts.apps.CheckoutsConfig",
     # Third-party apps
     "rest_framework",
     "drf_yasg",
