@@ -42,7 +42,7 @@ git clone https://github.com/shahriar-fattahi/django-ecommerce-api
 ```
 python -m venv your_venv_name
 ```
-4. Install Requirments:
+4. Install Requirements:
 ```
 pip install -r requirements.txt
 ```
