@@ -13,7 +13,7 @@ The project has 5 local Apps:
 - Login system with Json Web Token(JWT)
      - Login with email, password
      - Login with phone number(send SMS code)
-- Password change and reset endpoints.
+- Password change endpoint.
 - Custom permissions set for necessary endpoints(for each app)
 - Payment system using [Zarinpal](https://github.com/rasooll/zarinpal-django-py3/) and [IDpay](https://github.com/idpay/idpay-django-project)
 - Documentation using Swagger UI
