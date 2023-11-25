@@ -4,7 +4,7 @@ from . import models
 
 @admin.register(models.Category)
 class UserAddressAdmin(admin.ModelAdmin):
-    list_display = ("name", "is_subcategory", "parent", "modified_date")
+    list_display = ("name", "is_subcategory", "parent", "updated_date")
 
 
 class ProductGalleryInlines(admin.TabularInline):

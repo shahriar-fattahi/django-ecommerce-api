@@ -7,10 +7,14 @@ import requests
 import json
 from django.conf import settings
 from . import serializers
+import os
+from dotenv import load_dotenv
 
-ZP_API_REQUEST = "https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
-ZP_API_VERIFY = "https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
-ZP_API_STARTPAY = "https://www.zarinpal.com/pg/StartPay/"
+load_dotenv()
+
+ZP_API_REQUEST = os.environ.get("ZP_API_REQUEST")
+ZP_API_VERIFY = os.environ.get("ZP_API_VERIFY")
+ZP_API_STARTPAY = os.environ.get("ZP_API_STARTPAY")
 CallbackURL = "http://127.0.0.1:8080/verify/"
 
 

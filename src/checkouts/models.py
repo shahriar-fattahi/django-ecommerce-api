@@ -28,7 +28,7 @@ class Payment(models.Model):
     checkout = models.ForeignKey(
         Checkout, on_delete=models.CASCADE, related_name="payments"
     )
-    payment_method = models.CharField(max_length=1, choices=PAYMENT_METHOD_CHOICES)
+    method = models.CharField(max_length=1, choices=PAYMENT_METHOD_CHOICES)
     transaction_id = models.CharField(
         max_length=10,
         blank=True,
@@ -36,10 +36,8 @@ class Payment(models.Model):
         unique=True,
         default=utils.create_new_ref_number,
     )
-    payment_status = models.CharField(
-        max_length=1, choices=PAYMENT_STATUS_CHOICES, default="f"
-    )
-    payment_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default="f")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.checkout.user.email} - {self.checkout.id}"

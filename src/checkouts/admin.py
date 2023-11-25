@@ -18,14 +18,14 @@ class CheckoutAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = (
         "checkout",
-        "payment_method",
+        "method",
         "transaction_id",
-        "payment_status",
+        "status",
         "get_price",
-        "payment_date",
+        "created_at",
     )
 
     def get_price(self, obj):
         return obj.checkout.order.get_total_price()
 
-    list_filter = ("payment_date", "payment_status")
+    list_filter = ("created_at", "status")

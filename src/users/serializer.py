@@ -12,7 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "profile_picture",
-            "email_verified",
             "is_active",
         )
 
@@ -87,7 +86,7 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True)
 
 
-class SendCodeSerializer(serializers.Serializer):
+class PhoneSerializer(serializers.Serializer):
     phone = serializers.CharField(required=True)
 
     def validate_phone(self, value):
@@ -103,25 +102,32 @@ class SendCodeSerializer(serializers.Serializer):
 
 
 class ValidationCodeSerializer(serializers.Serializer):
-    code = serializers.CharField(required=True)
     phone = serializers.CharField(required=True)
+    code = serializers.CharField(required=True)
 
     def validate(self, attrs):
         if not User.objects.filter(phone=attrs["phone"]).exists():
-            raise serializers.ValidationError("The number entered is not registered")
+            raise serializers.ValidationError(
+                {"Phone": ["The number entered is not registered"]}
+            )
         if not User.objects.get(phone=attrs["phone"]).is_active:
-            raise serializers.ValidationError("Your account has not been activated")
+            raise serializers.ValidationError(
+                {"Phone": ["Your account has not been activated"]}
+            )
+
         try:
-            inc = VerificationCode.objects.get(phone=attrs["phone"])
+            inc = VerificationCode.objects.get(user__phone=attrs["phone"])
         except VerificationCode.DoesNotExist:
             raise serializers.ValidationError(
-                "You must first receive a verification code"
+                {"Code": ["You must first receive a verification code"]}
             )
         if not inc.is_valid:
-            raise serializers.ValidationError("Your verification code has expired")
+            raise serializers.ValidationError(
+                {"Code": ["Your verification code has expired"]}
+            )
         if inc.code != attrs["code"]:
             raise serializers.ValidationError(
-                "The verification code entered is invalid"
+                {"Code": ["The verification code entered is invalid"]}
             )
         return attrs
 
@@ -136,3 +142,46 @@ class UserAddressSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data.pop("owner")
         return super().update(instance, validated_data)
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    new_password_confirm = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError(
+                "Password must contain at least 8 characters"
+            )
+        elif not any(x.isalpha() for x in value):
+            raise serializers.ValidationError(
+                "The password must contain letters (at least one uppercase and lowercase letter)"
+            )
+        elif not any(x.isupper() for x in value):
+            raise serializers.ValidationError(
+                "Password must contain at least one capital letter"
+            )
+        elif not any(x.islower() for x in value):
+            raise serializers.ValidationError(
+                "The password must contain at least one lowercase letter"
+            )
+        elif not any(x.isdigit() for x in value):
+            raise serializers.ValidationError("Password must contain numbers")
+        elif not any(x in "!@#$%&*^" for x in value):
+            raise serializers.ValidationError(
+                "The password must contain the symbol (!@#$%&*^)"
+            )
+        return value
+
+    def validate(self, attrs):
+        # passwords validator
+        pass1 = attrs.get("new_password")
+        pass2 = attrs.get("new_password_confirm")
+        if pass1 and pass2 and pass1 != pass2:
+            raise serializers.ValidationError("New passwords must be matche")
+        return attrs
+
+
+class ResetPasswordEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
