@@ -28,7 +28,7 @@ The project has 5 local Apps:
 
 ## ER Diagram
 Database Relationship diagram generated using [dbdiagram](https://dbdiagram.io/home)
-> [Entity-Relationship link](https://dbdiagram.io/d/E-commerce-6561c3da3be1495787b58a33)
+> [Entity-Relationship Code link](https://dbdiagram.io/d/E-commerce-6561c3da3be1495787b58a33)
 ![E-commerce](https://github.com/shahriar-fattahi/django-ecommerce-api/assets/109045277/4d650bd8-3db8-4c4c-82ff-6a8ffc2afe99)
 
 ## Getting Started
