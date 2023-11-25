@@ -28,6 +28,9 @@ urlpatterns = [
         views.ChangeUserDetasilsApiView.as_view(),
         name="change-user-information",
     ),
+    path(
+        "change_password/", views.ChangePasswordView.as_view(), name="change-password"
+    ),
     path("delete_account/", views.DeleteUserApiView.as_view(), name="delete-user"),
     path("addresses/", include(router.urls)),
 ]

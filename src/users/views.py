@@ -14,6 +14,7 @@ from django.utils.http import urlsafe_base64_decode
 from . import utils
 from . import authentication
 from .permissions import IsAdminOrOwner
+from django.contrib.auth import update_session_auth_hash
 
 
 class RegisterApiView(views.APIView):
@@ -197,3 +198,29 @@ class AddressViewSet(viewsets.ModelViewSet):
             self.permission_classes = (IsAdminOrOwner,)
 
         return super().get_permissions()
+
+
+class ChangePasswordView(views.APIView):
+    """
+    Change password using old_password and new_password.
+    This endpoint can only be used if user is authenticated
+    """
+
+    authentication_classes = (authentication.CustomUserAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.POST)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        user = request.user
+        if user.check_password(data["old_password"]):
+            user.set_password(data["new_password"])
+            user.save()
+            update_session_auth_hash(request, user)
+            return response.Response(
+                {"message": "Password changed successfully."}, status=status.HTTP_200_OK
+            )
+        return response.Response(
+            {"error": "Incorrect old password."}, status=status.HTTP_400_BAD_REQUEST
+        )
