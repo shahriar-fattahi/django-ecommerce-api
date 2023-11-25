@@ -1,6 +1,6 @@
 from .base import *
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS")
 
 PNAME = os.environ.get("PNAME")
 PUSER = os.environ.get("PUSER")

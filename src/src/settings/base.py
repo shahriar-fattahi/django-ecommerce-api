@@ -13,7 +13,7 @@ JWT_SECRET = os.environ.get("JWT_SECRET")
 MERCHANT = os.environ.get("MERCHANT")
 
 
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
 
 INSTALLED_APPS = [
