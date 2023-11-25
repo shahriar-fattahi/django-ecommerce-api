@@ -8,8 +8,8 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
 
     name = models.CharField(max_length=100)
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(allow_unicode=True, unique=True)
     is_subcategory = models.BooleanField(default=False)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True)
@@ -30,8 +30,8 @@ class Product(models.Model):
     )
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     unit_price = models.PositiveIntegerField()
     discount = models.PositiveIntegerField(default=0)
     available = models.BooleanField(default=True)

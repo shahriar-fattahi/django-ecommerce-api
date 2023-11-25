@@ -10,7 +10,7 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     list_display = ["email", "phone", "first_name", "last_name", "is_admin", "id"]
-    list_filter = ["is_admin", "email_verified"]
+    list_filter = ["is_admin", "is_active"]
 
     fieldsets = [
         ("Identify", {"fields": ["email", "phone"]}),
@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
         ),
         (
             "Permissons",
-            {"fields": ["is_superuser", "is_admin", "is_active", "email_verified"]},
+            {"fields": ["is_superuser", "is_admin", "is_active"]},
         ),
     ]
     add_fieldsets = [
@@ -54,4 +54,7 @@ class UserAddressAdmin(admin.ModelAdmin):
 
 @admin.register(VerificationCode)
 class VerificationCodeAdmin(admin.ModelAdmin):
-    list_display = ("phone", "code", "start")
+    list_display = ("get_phone", "code", "start")
+
+    def get_phone(self, obj):
+        return obj.user.phone

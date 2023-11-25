@@ -30,7 +30,7 @@ class RegisterApiView(views.APIView):
             phone=data["phone"],
             password=data["password_confirm"],
         )
-        # tasks.send_activation_link_by_email(request, user, data['email'])
+        tasks.send_activation_link_by_email(request, user, data["email"])
         return response.Response(
             {"message": "Check your email to activate your account"},
             status.HTTP_201_CREATED,
@@ -86,7 +86,7 @@ class SendSMSAPIView(views.APIView):
     """
 
     def post(self, request):
-        serializer = SendCodeSerializer(data=request.POST)
+        serializer = PhoneSerializer(data=request.POST)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         verificationCode = tasks.send_verification_code_by_phone(data["phone"])

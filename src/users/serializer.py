@@ -87,7 +87,7 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True)
 
 
-class SendCodeSerializer(serializers.Serializer):
+class PhoneSerializer(serializers.Serializer):
     phone = serializers.CharField(required=True)
 
     def validate_phone(self, value):
@@ -103,25 +103,32 @@ class SendCodeSerializer(serializers.Serializer):
 
 
 class ValidationCodeSerializer(serializers.Serializer):
-    code = serializers.CharField(required=True)
     phone = serializers.CharField(required=True)
+    code = serializers.CharField(required=True)
 
     def validate(self, attrs):
         if not User.objects.filter(phone=attrs["phone"]).exists():
-            raise serializers.ValidationError("The number entered is not registered")
+            raise serializers.ValidationError(
+                {"Phone": ["The number entered is not registered"]}
+            )
         if not User.objects.get(phone=attrs["phone"]).is_active:
-            raise serializers.ValidationError("Your account has not been activated")
+            raise serializers.ValidationError(
+                {"Phone": ["Your account has not been activated"]}
+            )
+
         try:
-            inc = VerificationCode.objects.get(phone=attrs["phone"])
+            inc = VerificationCode.objects.get(user__phone=attrs["phone"])
         except VerificationCode.DoesNotExist:
             raise serializers.ValidationError(
-                "You must first receive a verification code"
+                {"Code": ["You must first receive a verification code"]}
             )
         if not inc.is_valid:
-            raise serializers.ValidationError("Your verification code has expired")
+            raise serializers.ValidationError(
+                {"Code": ["Your verification code has expired"]}
+            )
         if inc.code != attrs["code"]:
             raise serializers.ValidationError(
-                "The verification code entered is invalid"
+                {"Code": ["The verification code entered is invalid"]}
             )
         return attrs
 

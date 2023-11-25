@@ -12,12 +12,12 @@ class Order(models.Model):
         get_user_model(), on_delete=models.CASCADE, related_name="orders"
     )
     paid = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     discount = models.IntegerField(blank=True, null=True, default=None)
 
     class Meta:
-        ordering = ("paid", "-updated")
+        ordering = ("paid", "-updated_at")
 
     def __str__(self):
         return f"{self.user} - {str(self.id)}"
